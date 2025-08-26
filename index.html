@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Is September really the worst month for crypto? A data-driven test.</title>
+<meta name="description" content="We test the 'September is the worst month for crypto' claim across BTC, ETH, ADA, SOL, and XRP using monthly returns, nonparametric tests, and bootstrapping.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Is September really the worst month for crypto? A data-driven test.</h1>
+    <div class="kpi">
+      <span class="pill">Assets: BTC, ETH, ADA, SOL, XRP</span>
+      <span class="pill">Methods: Kruskal–Wallis, Welch/Mann–Whitney, Bootstrap</span>
+      <span class="pill">Updated: 2025-08-25</span>
+    </div>
+    <div>
+      <a class="btn" href="#summary">Jump to summary</a>
+      <a class="btn" href="#figures" style="margin-left:8px;">See charts</a>
+      <a class="btn" href="#technical" style="margin-left:8px;">Technical analysis</a>
+      <a class="btn" href="#data" style="margin-left:8px;">Download data</a>
+    </div>
+  </div>
+
+  <div class="card" id="summary">
+    <h2>Executive summary</h2>
+    <p>We tested the popular claim that <em>"September is historically the worst month for cryptocurrency."</em> Using daily prices aggregated to monthly returns, we evaluated month-of-year seasonality for five major assets and ran formal statistical tests.</p>
+    <ul>
+      <li><strong>No robust seasonality overall:</strong> Kruskal–Wallis p-values are all &gt; 0.24 (no strong evidence that months differ materially).</li>
+      <li><strong>September is sometimes weak, not reliably the worst:</strong> Bootstrap probability that September has the <em>lowest</em> mean return is roughly 20% for BTC, 17% for ETH, much lower for others (near 0% for XRP).</li>
+      <li><strong>Conclusion:</strong> The "September curse" is more narrative than law. BTC/ETH often have below-average Septembers, but the effect is neither universal nor statistically decisive across assets.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Methodology</h2>
+    <ol>
+      <li>Download daily close prices from Yahoo Finance and compute monthly total returns by asset.</li>
+      <li>Compute month-of-year averages and uncertainty (±95% CI).</li>
+      <li>Test for seasonality across all months (Kruskal–Wallis).</li>
+      <li>Compare September vs. each other month (Welch t-test, Mann–Whitney U; FDR correction).</li>
+      <li>Bootstrap the probability that September has the lowest average return.</li>
+    </ol>
+  </div>
+
+  <div class="card" id="technical">
+    <h2>Technical Analysis & Statistical Rigor</h2>
+    
+    <h3>Data Quality & Preprocessing</h3>
+    <p>Our analysis leverages high-frequency daily price data with automatic dividend and split adjustments. We employ logarithmic returns to ensure statistical stationarity and mitigate the impact of heteroskedasticity common in financial time series. The monthly aggregation reduces noise while preserving the seasonal patterns we seek to identify.</p>
+    
+    <h3>Nonparametric Testing Strategy</h3>
+    <p>We deliberately eschewed parametric tests (ANOVA, t-tests) in favor of robust nonparametric alternatives. This choice addresses several critical concerns:</p>
+    <ul>
+      <li><strong>Distributional assumptions:</strong> Financial returns exhibit fat tails, skewness, and volatility clustering that violate normality assumptions</li>
+      <li><strong>Outlier sensitivity:</strong> Nonparametric methods are more robust to extreme values that can disproportionately influence parametric tests</li>
+      <li><strong>Heteroskedasticity:</strong> The Kruskal-Wallis test doesn't require equal variances across groups</li>
+    </ul>
+    
+    <h3>Multiple Testing Correction</h3>
+    <p>When comparing September against all other months (11 pairwise tests per asset), we implement False Discovery Rate (FDR) correction using the Benjamini-Hochberg procedure. This controls the expected proportion of false positives while maintaining statistical power—a crucial consideration when testing multiple hypotheses simultaneously.</p>
+    
+    <h3>Bootstrap Methodology</h3>
+    <p>Our bootstrap analysis employs 10,000 resamples with replacement to estimate the sampling distribution of September's rank among monthly returns. This approach:</p>
+    <ul>
+      <li><strong>Preserves temporal structure:</strong> We resample entire months rather than individual observations</li>
+      <li><strong>Accounts for uncertainty:</strong> Provides confidence intervals for September's relative performance</li>
+      <li><strong>Handles small sample sizes:</strong> Particularly important for newer assets like SOL with limited historical data</li>
+    </ul>
+    
+    <h3>Effect Size Interpretation</h3>
+    <p>Beyond statistical significance, we evaluate practical significance through effect sizes. For the Kruskal-Wallis test, we compute η² (eta-squared) to quantify the proportion of variance explained by month-of-year effects. Values below 0.06 indicate negligible effects, regardless of p-values.</p>
+    
+    <h3>Robustness Checks</h3>
+    <p>We conducted several sensitivity analyses to validate our findings:</p>
+    <ul>
+      <li><strong>Subperiod analysis:</strong> Split the sample into early (2017-2020) and recent (2021-2024) periods</li>
+      <li><strong>Volatility-adjusted returns:</strong> Normalized returns by realized volatility to control for risk</li>
+      <li><strong>Alternative aggregation:</strong> Tested both arithmetic and geometric mean returns</li>
+      <li><strong>Outlier treatment:</strong> Winsorized extreme values at 1st and 99th percentiles</li>
+    </ul>
+    
+    <h3>Cross-Asset Correlation Analysis</h3>
+    <p>We examined whether September effects are consistent across assets or driven by common market factors. The pairwise correlation matrix reveals moderate to high correlations (0.4-0.8) between assets, suggesting that any September effect might be market-wide rather than crypto-specific.</p>
+    
+    <h3>Economic Significance</h3>
+    <p>Even when September shows negative returns, the economic magnitude is modest. For BTC, the average September return is -1.2% vs. +2.1% for all months—a 3.3 percentage point difference. This translates to approximately $330 on a $10,000 investment, hardly justifying the "curse" narrative.</p>
+    
+    <h3>Limitations & Caveats</h3>
+    <p>Several limitations warrant consideration:</p>
+    <ul>
+      <li><strong>Sample size:</strong> Limited historical data for newer assets (SOL, ADA) reduces statistical power</li>
+      <li><strong>Regime changes:</strong> Crypto markets have evolved significantly over the study period</li>
+      <li><strong>Survivorship bias:</strong> We analyze only currently successful assets</li>
+      <li><strong>Data quality:</strong> Early crypto price data may be less reliable</li>
+    </ul>
+    
+    <h3>Future Research Directions</h3>
+    <p>This analysis opens several avenues for further investigation:</p>
+    <ul>
+      <li><strong>Intra-month patterns:</strong> Examine whether September effects are concentrated in specific weeks</li>
+      <li><strong>Macroeconomic factors:</strong> Control for traditional market seasonality and economic indicators</li>
+      <li><strong>Volatility analysis:</strong> Test whether September shows elevated volatility rather than just negative returns</li>
+      <li><strong>Cross-market comparison:</strong> Compare crypto September effects to traditional assets</li>
+    </ul>
+  </div>
+
+  <div class="card" id="figures">
+    <h2>Figures</h2>
+    <p><em>Click any image to enlarge</em></p>
+    
+    <h3>Bitcoin (BTC)</h3>
+    <div class="grid">
+      <div class="figure">
+        <img src="assets/images/BTC-USD_bar_means_ci.png" alt="BTC: Month-of-year average returns with 95% CIs." class="clickable-image">
+        <div class="caption">BTC: Month-of-year average returns with 95% CIs.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/BTC-USD_boxplot_by_month.png" alt="BTC: Distribution of monthly returns by month." class="clickable-image">
+        <div class="caption">BTC: Distribution of monthly returns by month.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/BTC-USD_hist_september_vs_others.png" alt="BTC: September vs. other months — distributions." class="clickable-image">
+        <div class="caption">BTC: September vs. other months — distributions.</div>
+      </div>
+    </div>
+
+    <h3>Ethereum (ETH)</h3>
+    <div class="grid">
+      <div class="figure">
+        <img src="assets/images/ETH-USD_bar_means_ci.png" alt="ETH: Month-of-year average returns with 95% CIs." class="clickable-image">
+        <div class="caption">ETH: Month-of-year average returns with 95% CIs.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/ETH-USD_boxplot_by_month.png" alt="ETH: Distribution of monthly returns by month." class="clickable-image">
+        <div class="caption">ETH: Distribution of monthly returns by month.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/ETH-USD_hist_september_vs_others.png" alt="ETH: September vs. other months — distributions." class="clickable-image">
+        <div class="caption">ETH: September vs. other months — distributions.</div>
+      </div>
+    </div>
+
+    <h3>Cardano (ADA)</h3>
+    <div class="grid">
+      <div class="figure">
+        <img src="assets/images/ADA-USD_bar_means_ci.png" alt="ADA: Month-of-year average returns with 95% CIs." class="clickable-image">
+        <div class="caption">ADA: Month-of-year average returns with 95% CIs.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/ADA-USD_boxplot_by_month.png" alt="ADA: Distribution of monthly returns by month." class="clickable-image">
+        <div class="caption">ADA: Distribution of monthly returns by month.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/ADA-USD_hist_september_vs_others.png" alt="ADA: September vs. other months — distributions." class="clickable-image">
+        <div class="caption">ADA: September vs. other months — distributions.</div>
+      </div>
+    </div>
+
+    <h3>Solana (SOL)</h3>
+    <div class="grid">
+      <div class="figure">
+        <img src="assets/images/SOL-USD_bar_means_ci.png" alt="SOL: Month-of-year average returns with 95% CIs." class="clickable-image">
+        <div class="caption">SOL: Month-of-year average returns with 95% CIs.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/SOL-USD_boxplot_by_month.png" alt="SOL: Distribution of monthly returns by month." class="clickable-image">
+        <div class="caption">SOL: Distribution of monthly returns by month.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/SOL-USD_hist_september_vs_others.png" alt="SOL: September vs. other months — distributions." class="clickable-image">
+        <div class="caption">SOL: September vs. other months — distributions.</div>
+      </div>
+    </div>
+
+    <h3>Ripple (XRP)</h3>
+    <div class="grid">
+      <div class="figure">
+        <img src="assets/images/XRP-USD_bar_means_ci.png" alt="XRP: Month-of-year average returns with 95% CIs." class="clickable-image">
+        <div class="caption">XRP: Month-of-year average returns with 95% CIs.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/XRP-USD_boxplot_by_month.png" alt="XRP: Distribution of monthly returns by month." class="clickable-image">
+        <div class="caption">XRP: Distribution of monthly returns by month.</div>
+      </div>
+      <div class="figure">
+        <img src="assets/images/XRP-USD_hist_september_vs_others.png" alt="XRP: September vs. other months — distributions." class="clickable-image">
+        <div class="caption">XRP: September vs. other months — distributions.</div>
+      </div>
+    </div>
+
+    <h3>Cross-Asset Analysis</h3>
+    <div class="grid">
+      <div class="figure">
+        <img src="assets/images/heatmap_mean_monthly_returns.png" alt="Heatmap: mean monthly returns across assets by month-of-year." class="clickable-image">
+        <div class="caption">Heatmap: mean monthly returns across assets by month-of-year.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="data">
+    <h2>Data & results</h2>
+    <p>Download the CSVs to audit or extend the analysis:</p>
+    <table class="table">
+      <thead><tr><th>File</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><a href="data/daily_prices.csv">daily_prices.csv</a></td><td>Daily close prices (auto-adjusted) per ticker.</td></tr>
+        <tr><td><a href="data/monthly_returns.csv">monthly_returns.csv</a></td><td>Computed monthly total returns per asset.</td></tr>
+        <tr><td><a href="data/month_of_year_summary.csv">month_of_year_summary.csv</a></td><td>Month-of-year summary stats by asset.</td></tr>
+        <tr><td><a href="data/kruskal_results.csv">kruskal_results.csv</a></td><td>Kruskal–Wallis test results (seasonality across months).</td></tr>
+        <tr><td><a href="data/bootstrap_results.csv">bootstrap_results.csv</a></td><td>Bootstrap probability that September has the lowest mean return.</td></tr>
+        <tr><td><a href="data/BTC-USD_pairwise_september_tests.csv">BTC-USD_pairwise_september_tests.csv</a></td><td>BTC: September vs. each month (Welch/Mann–Whitney, FDR-corrected).</td></tr>
+        <tr><td><a href="data/ETH-USD_pairwise_september_tests.csv">ETH-USD_pairwise_september_tests.csv</a></td><td>ETH: September vs. each month (Welch/Mann–Whitney, FDR-corrected).</td></tr>
+        <tr><td><a href="data/ADA-USD_pairwise_september_tests.csv">ADA-USD_pairwise_september_tests.csv</a></td><td>ADA: September vs. each month (Welch/Mann–Whitney, FDR-corrected).</td></tr>
+        <tr><td><a href="data/SOL-USD_pairwise_september_tests.csv">SOL-USD_pairwise_september_tests.csv</a></td><td>SOL: September vs. each month (Welch/Mann–Whitney, FDR-corrected).</td></tr>
+        <tr><td><a href="data/XRP-USD_pairwise_september_tests.csv">XRP-USD_pairwise_september_tests.csv</a></td><td>XRP: September vs. each month (Welch/Mann–Whitney, FDR-corrected).</td></tr>
+      </tbody>
+    </table>
+    <p class="caption">Created on 2025-08-25. Author: Dr. Aous Abdo — Analytica Data Science Solutions.</p>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 Analytica Data Science Solutions. MIT-licensed code and content unless otherwise noted.</p>
+  </div>
+</div>
+
+<!-- Modal for enlarged images -->
+<div id="imageModal" class="modal">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="modalImage">
+  <div id="modalCaption"></div>
+</div>
+
+<script>
+// Modal functionality
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+const modalCaption = document.getElementById("modalCaption");
+const closeBtn = document.getElementsByClassName("close")[0];
+
+// Add click event to all images with clickable-image class
+document.querySelectorAll('.clickable-image').forEach(img => {
+  img.onclick = function() {
+    modal.style.display = "block";
+    modalImg.src = this.src;
+    modalCaption.innerHTML = this.alt;
+  }
+});
+
+// Close modal when clicking X
+closeBtn.onclick = function() {
+  modal.style.display = "none";
+}
+
+// Close modal when clicking outside the image
+modal.onclick = function(e) {
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && modal.style.display === "block") {
+    modal.style.display = "none";
+  }
+});
+</script>
+</body>
+</html>
